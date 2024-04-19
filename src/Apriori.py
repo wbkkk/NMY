@@ -1,4 +1,10 @@
-import numpy as np
+"""
+File Name: Apriori.py
+Author: 难民营
+Complete Date: 2024/5/27
+"""
+
+
 # 数据清洗
 def data_clean():
     # 数据转换
@@ -7,7 +13,8 @@ def data_clean():
     data = pd.read_csv(inputfile, encoding='utf-8')
 
     # 列合并
-    data['事故等级'] = data['事故等级'] + ',' + data['事故地点'] + ',' + data['线型'] + ',' + data['临近交通标牌'] + ',' + data['临近分合流区']
+    data['事故等级'] = data['事故等级'] + ',' + data['事故地点'] + ',' + data[
+        '线型'] + ',' + data['临近交通标牌'] + ',' + data['临近分合流区']
 
     # 对合并的商品列转换数据格式
     data['事故等级'] = data['事故等级'].apply(lambda x: [x[0:]])
@@ -20,6 +27,7 @@ def data_clean():
         data_translation.append(p)
 
     return data_translation
+
 
 # Apriori模型
 # 参数出现的位置：107,134,141,150，
@@ -133,20 +141,28 @@ def Apriori_Model(dataSet):
 
     def calcConf(freqSet, H, supportData, ruleList, minConf=0):
         for conseq in H:  # 遍历H中的所有项集并计算它们的可信度值
-            if conseq == frozenset({'私了事故'}) or conseq == frozenset({'轻微事故'}) or conseq == frozenset({'一般事故'}) or conseq == frozenset({'重大事故'}): # 剪枝：选择所需关联规则(指向事故严重程度)
-                conf = supportData[freqSet] / supportData[freqSet - conseq]  # 可信度计算，结合支持度数据
+            if conseq == frozenset({'私了事故'}) or conseq == frozenset({
+                    '轻微事故'
+            }) or conseq == frozenset({'一般事故'}) or conseq == frozenset(
+                {'重大事故'}):  # 剪枝：选择所需关联规则(指向事故严重程度)
+                conf = supportData[freqSet] / supportData[
+                    freqSet - conseq]  # 可信度计算，结合支持度数据
                 '''
                 提升度计算:ift = p(a & b) / p(a)*p(b) 
                 提升度表示先购买其中一个商品对购买购买另一个商品的概率的提升作用，用来判断规则是否有实际价值，
                 即使用规则后商品在购物车中出现的次数是否高于商品单独出现在购物车中的频率。如果大于1说明规则有效，小于1则无效。
                 '''
-                lift = supportData[freqSet] / (supportData[conseq] * supportData[freqSet - conseq])
+                lift = supportData[freqSet] / (supportData[conseq] *
+                                               supportData[freqSet - conseq])
 
                 if lift > 1:
                     print(conseq)
-                    print('**********************支持度 置信度***************************')
-                    print(freqSet - conseq, '-->', conseq, '支持度：', round(supportData[freqSet], 6), '置信度：', round(conf, 6),
-                      '提升度：', round(lift, 6))
+                    print(
+                        '**********************支持度 置信度***************************'
+                    )
+                    print(freqSet - conseq, '-->', conseq, '支持度：',
+                          round(supportData[freqSet], 6), '置信度：',
+                          round(conf, 6), '提升度：', round(lift, 6))
                     ruleList.append((freqSet - conseq, conseq, conf))
 
     # 生成规则
@@ -165,5 +181,6 @@ def Apriori_Model(dataSet):
     rule = gen_rule(L, supportData, minConf=0)
     print('**********************rule***************************')
     print(rule)
+
 
 Apriori_Model(data_clean())
