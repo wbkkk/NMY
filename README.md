@@ -1,6 +1,6 @@
 # 难民营
 This is a repository for university student innovation project.
-## Ariori-DPSO
+## Apriori-DPSO
 This project has designed a novel discretized particle swarm optimization algorithm, termed Aprori-DPSO, for structural learning of Bayesian networks. 
 This algorithm employs strong association rules derived from the Apriori algorithm as prior knowledge. 
 The movement velocities of particles are calculated using matrix operations. 
